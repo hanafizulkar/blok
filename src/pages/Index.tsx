@@ -1,14 +1,8 @@
-import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
-import Landing from "./Landing";
 
 const Index = () => {
-  const { user, loading } = useAuth();
-
-  if (loading) return null;
-  if (user) return <Navigate to="/dashboard" replace />;
-
-  return <Landing />;
+  // Arahkan langsung ke modul Bansos Blockchain
+  return <Navigate to="/bansos" replace />;
 };
 
 export default Index;
