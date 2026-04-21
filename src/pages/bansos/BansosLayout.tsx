@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Shield, LayoutDashboard, Users, Package, BarChart3, Settings, LogOut, Menu, ChevronRight, Blocks } from "lucide-react";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Shield, LayoutDashboard, Users, Package, BarChart3, LogOut, Menu, Blocks } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useBansosRole } from "@/hooks/use-bansos";
 import { supabase } from "@/integrations/supabase/client";
+import { BansosThemeToggle } from "@/components/bansos/BansosThemeToggle";
 
 const adminNav = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/bansos/dashboard" },
@@ -28,7 +28,7 @@ function NavItems({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
             className={cn(
               "flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors",
-              active ? "bg-[#1e3a5f] text-white" : "text-white/50 hover:text-white hover:bg-white/5"
+              active ? "bg-bansos-primary text-white" : "text-bansos-text-muted hover:text-bansos-text hover:bg-bansos-border/40"
             )}
           >
             <item.icon className="h-4 w-4" />
@@ -50,37 +50,36 @@ export default function BansosLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a1628]">
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex flex-col w-56 border-r border-white/10 bg-[#0a1628]">
-        <Link to="/bansos" className="flex items-center gap-2 h-14 px-4 border-b border-white/10">
-          <Shield className="h-5 w-5 text-[#c9a84c]" />
-          <span className="font-bold text-white tracking-tight">BansosChain</span>
+    <div className="flex min-h-screen bg-bansos-bg">
+      <aside className="hidden md:flex flex-col w-56 border-r border-bansos-border bg-bansos-surface">
+        <Link to="/bansos" className="flex items-center gap-2 h-14 px-4 border-b border-bansos-border">
+          <Shield className="h-5 w-5 text-bansos-accent" />
+          <span className="font-bold text-bansos-text tracking-tight">BansosChain</span>
         </Link>
         <nav className="flex-1 py-3 px-2 space-y-0.5">
           <NavItems />
         </nav>
-        <div className="border-t border-white/10 p-2">
-          <button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 text-sm text-white/40 hover:text-white/70 transition-colors w-full">
+        <div className="border-t border-bansos-border p-2 flex items-center justify-between">
+          <button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 text-sm text-bansos-text-muted hover:text-bansos-text transition-colors">
             <LogOut className="h-4 w-4" />
             <span>Logout</span>
           </button>
+          <BansosThemeToggle />
         </div>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile header */}
-        <header className="sticky top-0 z-40 md:hidden flex items-center justify-between h-12 border-b border-white/10 bg-[#0a1628] px-3">
+        <header className="sticky top-0 z-40 md:hidden flex items-center justify-between h-12 border-b border-bansos-border bg-bansos-surface px-3">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-white">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-bansos-text">
                 <Menu className="h-4 w-4" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-56 bg-[#0a1628] border-white/10">
-              <div className="flex items-center gap-2 h-14 px-4 border-b border-white/10">
-                <Shield className="h-5 w-5 text-[#c9a84c]" />
-                <span className="font-bold text-white">BansosChain</span>
+            <SheetContent side="left" className="p-0 w-56 bg-bansos-surface border-bansos-border">
+              <div className="flex items-center gap-2 h-14 px-4 border-b border-bansos-border">
+                <Shield className="h-5 w-5 text-bansos-accent" />
+                <span className="font-bold text-bansos-text">BansosChain</span>
               </div>
               <nav className="py-3 px-2 space-y-0.5">
                 <NavItems onNavigate={() => setOpen(false)} />
@@ -88,10 +87,10 @@ export default function BansosLayout() {
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-1.5">
-            <Shield className="h-4 w-4 text-[#c9a84c]" />
-            <span className="font-bold text-white text-sm">BansosChain</span>
+            <Shield className="h-4 w-4 text-bansos-accent" />
+            <span className="font-bold text-bansos-text text-sm">BansosChain</span>
           </div>
-          <div className="w-8" />
+          <BansosThemeToggle />
         </header>
 
         <main className="flex-1 overflow-auto">
