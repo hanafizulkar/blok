@@ -15,6 +15,16 @@ import BugList from "./pages/BugList";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import BansosLanding from "./pages/bansos/BansosLanding";
+import BansosLogin from "./pages/bansos/BansosLogin";
+import BansosLayout from "./pages/bansos/BansosLayout";
+import BansosDashboard from "./pages/bansos/BansosDashboard";
+import BansosRecipients from "./pages/bansos/BansosRecipients";
+import BansosDistributions from "./pages/bansos/BansosDistributions";
+import BansosBlockchain from "./pages/bansos/BansosBlockchain";
+import BansosTrack from "./pages/bansos/BansosTrack";
+import BansosStats from "./pages/bansos/BansosStats";
+import { BansosProtectedRoute } from "./components/bansos/BansosProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +45,21 @@ const App = () => (
               <Route path="/bugs/:id" element={<ProtectedRoute><BugDetail /></ProtectedRoute>} />
               <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+              {/* Bansos module — public */}
+              <Route path="/bansos" element={<BansosLanding />} />
+              <Route path="/bansos/login" element={<BansosLogin />} />
+              <Route path="/bansos/track" element={<BansosTrack />} />
+              <Route path="/bansos/stats" element={<BansosStats />} />
+
+              {/* Bansos module — authenticated */}
+              <Route path="/bansos" element={<BansosProtectedRoute><BansosLayout /></BansosProtectedRoute>}>
+                <Route path="dashboard" element={<BansosDashboard />} />
+                <Route path="recipients" element={<BansosRecipients />} />
+                <Route path="distributions" element={<BansosDistributions />} />
+                <Route path="blockchain" element={<BansosBlockchain />} />
+              </Route>
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
