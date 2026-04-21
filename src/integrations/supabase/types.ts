@@ -93,6 +93,230 @@ export type Database = {
           },
         ]
       }
+      bansos_blockchain: {
+        Row: {
+          block_index: number
+          created_at: string
+          data: Json
+          distribution_id: string | null
+          hash: string
+          id: string
+          previous_hash: string
+        }
+        Insert: {
+          block_index?: number
+          created_at?: string
+          data: Json
+          distribution_id?: string | null
+          hash: string
+          id?: string
+          previous_hash: string
+        }
+        Update: {
+          block_index?: number
+          created_at?: string
+          data?: Json
+          distribution_id?: string | null
+          hash?: string
+          id?: string
+          previous_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bansos_blockchain_distribution_id_fkey"
+            columns: ["distribution_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_distributions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bansos_distributions: {
+        Row: {
+          amount: number
+          created_at: string
+          distributed_at: string | null
+          id: string
+          location: string | null
+          notes: string | null
+          officer_id: string | null
+          program_id: string
+          recipient_id: string
+          status: Database["public"]["Enums"]["bansos_distribution_status"]
+          tracking_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          distributed_at?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          officer_id?: string | null
+          program_id: string
+          recipient_id: string
+          status?: Database["public"]["Enums"]["bansos_distribution_status"]
+          tracking_id?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          distributed_at?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          officer_id?: string | null
+          program_id?: string
+          recipient_id?: string
+          status?: Database["public"]["Enums"]["bansos_distribution_status"]
+          tracking_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bansos_distributions_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_programs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bansos_distributions_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_recipients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bansos_programs: {
+        Row: {
+          amount_per_distribution: number
+          category: Database["public"]["Enums"]["bansos_category"]
+          created_at: string
+          created_by: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean
+          name: string
+          start_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_per_distribution?: number
+          category?: Database["public"]["Enums"]["bansos_category"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_per_distribution?: number
+          category?: Database["public"]["Enums"]["bansos_category"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      bansos_recipients: {
+        Row: {
+          address: string | null
+          category: Database["public"]["Enums"]["bansos_category"]
+          city: string | null
+          created_at: string
+          created_by: string | null
+          full_name: string
+          id: string
+          nik: string
+          notes: string | null
+          phone: string | null
+          province: string | null
+          qr_token: string
+          updated_at: string
+          user_id: string | null
+          verification_status: Database["public"]["Enums"]["bansos_verification_status"]
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          address?: string | null
+          category?: Database["public"]["Enums"]["bansos_category"]
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          full_name: string
+          id?: string
+          nik: string
+          notes?: string | null
+          phone?: string | null
+          province?: string | null
+          qr_token?: string
+          updated_at?: string
+          user_id?: string | null
+          verification_status?: Database["public"]["Enums"]["bansos_verification_status"]
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: Database["public"]["Enums"]["bansos_category"]
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          full_name?: string
+          id?: string
+          nik?: string
+          notes?: string | null
+          phone?: string | null
+          province?: string | null
+          qr_token?: string
+          updated_at?: string
+          user_id?: string | null
+          verification_status?: Database["public"]["Enums"]["bansos_verification_status"]
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
+      bansos_user_roles: {
+        Row: {
+          assigned_by: string | null
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["bansos_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_by?: string | null
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["bansos_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_by?: string | null
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["bansos_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       bugs: {
         Row: {
           actual_behavior: string | null
@@ -384,6 +608,49 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bansos_has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["bansos_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      bansos_is_staff: { Args: { _user_id: string }; Returns: boolean }
+      bansos_public_track: {
+        Args: { _query: string }
+        Returns: {
+          amount: number
+          block_hash: string
+          block_index: number
+          category: string
+          created_at: string
+          distributed_at: string
+          location: string
+          program_name: string
+          recipient_name: string
+          status: string
+          tracking_id: string
+        }[]
+      }
+      bansos_stats: {
+        Args: never
+        Returns: {
+          active_programs: number
+          total_amount: number
+          total_blocks: number
+          total_distributions: number
+          total_recipients: number
+          verified_recipients: number
+        }[]
+      }
+      bansos_verify_chain: {
+        Args: never
+        Returns: {
+          first_invalid_index: number
+          total_blocks: number
+          valid: boolean
+        }[]
+      }
       get_team_members: {
         Args: never
         Returns: {
@@ -404,6 +671,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      bansos_category: "PKH" | "BPNT" | "BLT" | "PIP" | "BST" | "Lainnya"
+      bansos_distribution_status:
+        | "scheduled"
+        | "distributed"
+        | "received"
+        | "failed"
+      bansos_role: "admin_pemerintah" | "petugas_lapangan" | "penerima"
+      bansos_verification_status: "pending" | "verified" | "rejected"
       bug_severity: "critical" | "high" | "medium" | "low"
       bug_status:
         | "new"
@@ -540,6 +815,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      bansos_category: ["PKH", "BPNT", "BLT", "PIP", "BST", "Lainnya"],
+      bansos_distribution_status: [
+        "scheduled",
+        "distributed",
+        "received",
+        "failed",
+      ],
+      bansos_role: ["admin_pemerintah", "petugas_lapangan", "penerima"],
+      bansos_verification_status: ["pending", "verified", "rejected"],
       bug_severity: ["critical", "high", "medium", "low"],
       bug_status: [
         "new",
