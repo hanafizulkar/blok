@@ -116,6 +116,39 @@
 }
 
 @layer base {
+  /* Bansos module — Garuda Navy theme tokens (light & dark adaptive) */
+  :root {
+    --bansos-bg: 40 33% 96%;
+    --bansos-surface: 0 0% 100%;
+    --bansos-surface-elevated: 40 20% 98%;
+    --bansos-border: 220 15% 88%;
+    --bansos-text: 220 40% 12%;
+    --bansos-text-muted: 220 15% 40%;
+    --bansos-text-faint: 220 10% 55%;
+    --bansos-primary: 220 50% 22%;
+    --bansos-primary-hover: 220 50% 28%;
+    --bansos-accent: 43 55% 48%;
+    --bansos-accent-hover: 43 55% 54%;
+    --bansos-on-accent: 220 50% 15%;
+  }
+
+  .dark {
+    --bansos-bg: 217 50% 7%;
+    --bansos-surface: 220 50% 10%;
+    --bansos-surface-elevated: 220 40% 13%;
+    --bansos-border: 220 25% 22%;
+    --bansos-text: 0 0% 96%;
+    --bansos-text-muted: 220 15% 65%;
+    --bansos-text-faint: 220 10% 45%;
+    --bansos-primary: 220 50% 28%;
+    --bansos-primary-hover: 220 50% 35%;
+    --bansos-accent: 43 55% 54%;
+    --bansos-accent-hover: 43 55% 62%;
+    --bansos-on-accent: 217 50% 7%;
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
   }
