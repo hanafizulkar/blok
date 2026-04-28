@@ -61,6 +61,9 @@ const App = () => (
                 <Route path="recipients" element={<BansosRecipients />} />
                 <Route path="distributions" element={<BansosDistributions />} />
                 <Route path="blockchain" element={<BansosBlockchain />} />
+                <Route path="wallet" element={<BansosWallet />} />
+                <Route path="treasury" element={<BansosTreasury />} />
+                <Route path="merchants" element={<BansosMerchants />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
