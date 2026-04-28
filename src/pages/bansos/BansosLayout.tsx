@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Shield, LayoutDashboard, Users, Package, BarChart3, LogOut, Menu, Blocks } from "lucide-react";
+import { Shield, LayoutDashboard, Users, Package, BarChart3, LogOut, Menu, Blocks, Wallet, Landmark, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -11,6 +11,9 @@ const adminNav = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/bansos/dashboard" },
   { icon: Users, label: "Penerima", path: "/bansos/recipients" },
   { icon: Package, label: "Distribusi", path: "/bansos/distributions" },
+  { icon: Landmark, label: "Treasury", path: "/bansos/treasury" },
+  { icon: Wallet, label: "Dompet Saya", path: "/bansos/wallet" },
+  { icon: Store, label: "Merchants", path: "/bansos/merchants" },
   { icon: Blocks, label: "Blockchain", path: "/bansos/blockchain" },
   { icon: BarChart3, label: "Statistik", path: "/bansos/stats" },
 ];
