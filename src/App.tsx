@@ -25,6 +25,9 @@ import BansosBlockchain from "./pages/bansos/BansosBlockchain";
 import BansosTrack from "./pages/bansos/BansosTrack";
 import BansosStats from "./pages/bansos/BansosStats";
 import { BansosProtectedRoute } from "./components/bansos/BansosProtectedRoute";
+import BansosWallet from "./pages/bansos/BansosWallet";
+import BansosTreasury from "./pages/bansos/BansosTreasury";
+import BansosMerchants from "./pages/bansos/BansosMerchants";
 
 const queryClient = new QueryClient();
 
