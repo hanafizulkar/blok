@@ -79,6 +79,98 @@ export function useBansosChainVerify() {
   });
 }
 
+export function useBansosMyWallet() {
+  return useQuery({
+    queryKey: ["bansos-my-wallet"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+      const { data, error } = await supabase
+        .from("bansos_wallets")
+        .select("*")
+        .eq("owner_user_id", user.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useBansosWallets() {
+  return useQuery({
+    queryKey: ["bansos-wallets"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("bansos_wallets")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useBansosTreasuryWallets() {
+  return useQuery({
+    queryKey: ["bansos-treasury-wallets"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("bansos_wallets")
+        .select("*, bansos_programs!bansos_wallets_owner_program_id_fkey(name, category)")
+        .eq("wallet_type", "treasury")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useBansosWalletTxs(walletId: string | null | undefined) {
+  return useQuery({
+    queryKey: ["bansos-wallet-txs", walletId],
+    enabled: !!walletId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("bansos_wallet_transactions")
+        .select("*")
+        .or(`from_wallet_id.eq.${walletId},to_wallet_id.eq.${walletId}`)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useBansosAllTxs() {
+  return useQuery({
+    queryKey: ["bansos-all-txs"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("bansos_wallet_transactions")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useBansosMerchants() {
+  return useQuery({
+    queryKey: ["bansos-merchants"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("bansos_merchants")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
 export function useBansosTrack(query: string | null) {
   return useQuery({
     queryKey: ["bansos-track", query],
