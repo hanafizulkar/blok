@@ -191,9 +191,57 @@ export type Database = {
           },
         ]
       }
+      bansos_merchants: {
+        Row: {
+          address: string | null
+          category: string
+          created_at: string
+          id: string
+          is_verified: boolean
+          name: string
+          owner_user_id: string | null
+          phone: string | null
+          updated_at: string
+          wallet_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          is_verified?: boolean
+          name: string
+          owner_user_id?: string | null
+          phone?: string | null
+          updated_at?: string
+          wallet_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          is_verified?: boolean
+          name?: string
+          owner_user_id?: string | null
+          phone?: string | null
+          updated_at?: string
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bansos_merchants_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bansos_programs: {
         Row: {
           amount_per_distribution: number
+          budget_total: number
           category: Database["public"]["Enums"]["bansos_category"]
           created_at: string
           created_by: string | null
@@ -203,10 +251,12 @@ export type Database = {
           is_active: boolean
           name: string
           start_date: string | null
+          treasury_wallet_id: string | null
           updated_at: string
         }
         Insert: {
           amount_per_distribution?: number
+          budget_total?: number
           category?: Database["public"]["Enums"]["bansos_category"]
           created_at?: string
           created_by?: string | null
@@ -216,10 +266,12 @@ export type Database = {
           is_active?: boolean
           name: string
           start_date?: string | null
+          treasury_wallet_id?: string | null
           updated_at?: string
         }
         Update: {
           amount_per_distribution?: number
+          budget_total?: number
           category?: Database["public"]["Enums"]["bansos_category"]
           created_at?: string
           created_by?: string | null
@@ -229,9 +281,18 @@ export type Database = {
           is_active?: boolean
           name?: string
           start_date?: string | null
+          treasury_wallet_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bansos_programs_treasury_wallet_id_fkey"
+            columns: ["treasury_wallet_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bansos_recipients: {
         Row: {
@@ -316,6 +377,137 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      bansos_wallet_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          distribution_id: string | null
+          from_wallet_id: string | null
+          id: string
+          merchant_id: string | null
+          metadata: Json | null
+          status: Database["public"]["Enums"]["bansos_tx_status"]
+          to_wallet_id: string | null
+          tx_hash: string
+          tx_type: Database["public"]["Enums"]["bansos_tx_type"]
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          distribution_id?: string | null
+          from_wallet_id?: string | null
+          id?: string
+          merchant_id?: string | null
+          metadata?: Json | null
+          status?: Database["public"]["Enums"]["bansos_tx_status"]
+          to_wallet_id?: string | null
+          tx_hash?: string
+          tx_type: Database["public"]["Enums"]["bansos_tx_type"]
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          distribution_id?: string | null
+          from_wallet_id?: string | null
+          id?: string
+          merchant_id?: string | null
+          metadata?: Json | null
+          status?: Database["public"]["Enums"]["bansos_tx_status"]
+          to_wallet_id?: string | null
+          tx_hash?: string
+          tx_type?: Database["public"]["Enums"]["bansos_tx_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bansos_wallet_transactions_distribution_id_fkey"
+            columns: ["distribution_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_distributions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bansos_wallet_transactions_from_wallet_id_fkey"
+            columns: ["from_wallet_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_wallets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bansos_wallet_transactions_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bansos_wallet_transactions_to_wallet_id_fkey"
+            columns: ["to_wallet_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bansos_wallets: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string
+          owner_program_id: string | null
+          owner_recipient_id: string | null
+          owner_user_id: string | null
+          updated_at: string
+          wallet_address: string
+          wallet_type: Database["public"]["Enums"]["bansos_wallet_type"]
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label: string
+          owner_program_id?: string | null
+          owner_recipient_id?: string | null
+          owner_user_id?: string | null
+          updated_at?: string
+          wallet_address?: string
+          wallet_type: Database["public"]["Enums"]["bansos_wallet_type"]
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          owner_program_id?: string | null
+          owner_recipient_id?: string | null
+          owner_user_id?: string | null
+          updated_at?: string
+          wallet_address?: string
+          wallet_type?: Database["public"]["Enums"]["bansos_wallet_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bansos_wallets_owner_program_id_fkey"
+            columns: ["owner_program_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_programs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bansos_wallets_owner_recipient_id_fkey"
+            columns: ["owner_recipient_id"]
+            isOneToOne: false
+            referencedRelation: "bansos_recipients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bugs: {
         Row: {
@@ -616,6 +808,10 @@ export type Database = {
         Returns: boolean
       }
       bansos_is_staff: { Args: { _user_id: string }; Returns: boolean }
+      bansos_merchant_purchase: {
+        Args: { _amount: number; _description?: string; _merchant_id: string }
+        Returns: string
+      }
       bansos_public_track: {
         Args: { _query: string }
         Returns: {
@@ -642,6 +838,10 @@ export type Database = {
           total_recipients: number
           verified_recipients: number
         }[]
+      }
+      bansos_treasury_topup: {
+        Args: { _amount: number; _description?: string; _program_id: string }
+        Returns: string
       }
       bansos_verify_chain: {
         Args: never
@@ -677,8 +877,21 @@ export type Database = {
         | "distributed"
         | "received"
         | "failed"
-      bansos_role: "admin_pemerintah" | "petugas_lapangan" | "penerima"
+      bansos_role:
+        | "admin_pemerintah"
+        | "petugas_lapangan"
+        | "penerima"
+        | "merchant"
+      bansos_tx_status: "pending" | "completed" | "failed"
+      bansos_tx_type:
+        | "topup"
+        | "disbursement"
+        | "purchase"
+        | "transfer"
+        | "withdraw"
+        | "allocation"
       bansos_verification_status: "pending" | "verified" | "rejected"
+      bansos_wallet_type: "recipient" | "merchant" | "treasury"
       bug_severity: "critical" | "high" | "medium" | "low"
       bug_status:
         | "new"
@@ -822,8 +1035,23 @@ export const Constants = {
         "received",
         "failed",
       ],
-      bansos_role: ["admin_pemerintah", "petugas_lapangan", "penerima"],
+      bansos_role: [
+        "admin_pemerintah",
+        "petugas_lapangan",
+        "penerima",
+        "merchant",
+      ],
+      bansos_tx_status: ["pending", "completed", "failed"],
+      bansos_tx_type: [
+        "topup",
+        "disbursement",
+        "purchase",
+        "transfer",
+        "withdraw",
+        "allocation",
+      ],
       bansos_verification_status: ["pending", "verified", "rejected"],
+      bansos_wallet_type: ["recipient", "merchant", "treasury"],
       bug_severity: ["critical", "high", "medium", "low"],
       bug_status: [
         "new",
