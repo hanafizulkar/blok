@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Wallet, ArrowDownLeft, ArrowUpRight, Copy, ShoppingBag, Link2, Unlink } from "lucide-react";
+import { Wallet, ArrowDownLeft, ArrowUpRight, Copy, ShoppingBag, Link2, Unlink, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
