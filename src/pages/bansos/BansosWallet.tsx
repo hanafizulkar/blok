@@ -30,6 +30,38 @@ export default function BansosWallet() {
     toast({ title: "Tersalin", description: "Alamat dompet disalin." });
   };
 
+  const handleConnectPhantom = async () => {
+    const provider = (window as any)?.phantom?.solana ?? (window as any)?.solana;
+    if (!provider?.isPhantom) {
+      toast({
+        title: "Phantom tidak terdeteksi",
+        description: "Install ekstensi/aplikasi Phantom Wallet terlebih dahulu (phantom.app).",
+        variant: "destructive",
+      });
+      window.open("https://phantom.app/", "_blank");
+      return;
+    }
+    try {
+      const resp = await provider.connect();
+      const address = resp?.publicKey?.toString();
+      if (!address) throw new Error("Gagal mendapatkan alamat Phantom");
+      const { error } = await supabase.rpc("bansos_link_phantom", { _phantom_address: address });
+      if (error) throw error;
+      toast({ title: "Phantom terhubung", description: address.slice(0, 8) + "…" + address.slice(-6) });
+      queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
+    } catch (err: any) {
+      toast({ title: "Gagal menghubungkan", description: err?.message ?? "Coba lagi", variant: "destructive" });
+    }
+  };
+
+  const handleUnlinkPhantom = async () => {
+    const { error } = await supabase.rpc("bansos_unlink_phantom");
+    if (error) return toast({ title: "Gagal", description: error.message, variant: "destructive" });
+    try { await (window as any)?.phantom?.solana?.disconnect?.(); } catch {}
+    toast({ title: "Phantom diputus" });
+    queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
+  };
+
   const handlePay = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
