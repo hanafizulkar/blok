@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Wallet, ArrowDownLeft, ArrowUpRight, Copy, ShoppingBag, Link2, Unlink } from "lucide-react";
+import { Wallet, ArrowDownLeft, ArrowUpRight, Copy, ShoppingBag, Link2, Unlink, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -196,9 +197,52 @@ export default function BansosWallet() {
             )}
           </div>
           {(wallet as any).phantom_address ? (
-            <Button size="sm" variant="outline" onClick={handleUnlinkPhantom}>
-              <Unlink className="h-3.5 w-3.5 mr-1.5" /> Putus
-            </Button>
+            <div className="flex items-center gap-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline" title="Tampilkan QR alamat Phantom">
+                    <QrCode className="h-3.5 w-3.5" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-bansos-surface border-bansos-border text-bansos-text max-w-sm">
+                  <DialogHeader>
+                    <DialogTitle className="text-center">Receive Address</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center gap-4 py-2">
+                    <div className="bg-white p-4 rounded-md">
+                      <QRCodeSVG
+                        value={(wallet as any).phantom_address}
+                        size={220}
+                        level="H"
+                        includeMargin={false}
+                      />
+                    </div>
+                    <div className="text-xs font-semibold text-bansos-accent">Your Solana Address</div>
+                    <div className="w-full bg-bansos-bg border border-bansos-border rounded-md p-3">
+                      <code className="text-xs text-bansos-text font-mono break-all text-center block">
+                        {(wallet as any).phantom_address}
+                      </code>
+                    </div>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        navigator.clipboard.writeText((wallet as any).phantom_address);
+                        toast({ title: "Tersalin", description: "Alamat Phantom disalin." });
+                      }}
+                    >
+                      <Copy className="h-4 w-4 mr-2" /> Copy
+                    </Button>
+                    <p className="text-xs text-bansos-text-muted text-center">
+                      Use to receive tokens on the Solana network only.
+                    </p>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              <Button size="sm" variant="outline" onClick={handleUnlinkPhantom}>
+                <Unlink className="h-3.5 w-3.5 mr-1.5" /> Putus
+              </Button>
+            </div>
           ) : (
             <Button size="sm" onClick={handleConnectPhantom} className="bg-[#ab9ff2] text-black hover:bg-[#9a8be8]">
               <Link2 className="h-3.5 w-3.5 mr-1.5" /> Hubungkan
