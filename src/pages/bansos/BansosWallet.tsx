@@ -133,6 +133,36 @@ export default function BansosWallet() {
         </CardContent>
       </Card>
 
+      {/* Phantom Wallet link */}
+      <Card className="bg-bansos-surface border-bansos-border">
+        <CardContent className="p-4 flex items-center gap-3">
+          <div className="h-10 w-10 rounded-md bg-[#ab9ff2]/15 text-[#ab9ff2] flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 128 128" className="h-6 w-6" fill="currentColor" aria-hidden>
+              <path d="M64 16C37.5 16 16 37.5 16 64s21.5 48 48 48c2.4 0 4.4-2 4.4-4.4 0-1.2-.5-2.3-1.3-3.1-1.6-1.6-2.5-3.8-2.5-6.2 0-4.9 4-8.8 8.8-8.8h10.4c14 0 25.4-11.4 25.4-25.4C109.2 33.4 89.1 16 64 16zm-25.6 56a6.4 6.4 0 1 1 0-12.8 6.4 6.4 0 0 1 0 12.8zm22.4 0a6.4 6.4 0 1 1 0-12.8 6.4 6.4 0 0 1 0 12.8z"/>
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-bansos-text">Phantom Wallet</div>
+            {(wallet as any).phantom_address ? (
+              <code className="text-xs text-bansos-text-faint font-mono truncate block">
+                {(wallet as any).phantom_address.slice(0, 8)}…{(wallet as any).phantom_address.slice(-6)}
+              </code>
+            ) : (
+              <div className="text-xs text-bansos-text-muted">Hubungkan untuk verifikasi identitas Web3</div>
+            )}
+          </div>
+          {(wallet as any).phantom_address ? (
+            <Button size="sm" variant="outline" onClick={handleUnlinkPhantom}>
+              <Unlink className="h-3.5 w-3.5 mr-1.5" /> Putus
+            </Button>
+          ) : (
+            <Button size="sm" onClick={handleConnectPhantom} className="bg-[#ab9ff2] text-black hover:bg-[#9a8be8]">
+              <Link2 className="h-3.5 w-3.5 mr-1.5" /> Hubungkan
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Action */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
