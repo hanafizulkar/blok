@@ -462,6 +462,8 @@ export type Database = {
           owner_program_id: string | null
           owner_recipient_id: string | null
           owner_user_id: string | null
+          phantom_address: string | null
+          phantom_linked_at: string | null
           updated_at: string
           wallet_address: string
           wallet_type: Database["public"]["Enums"]["bansos_wallet_type"]
@@ -475,6 +477,8 @@ export type Database = {
           owner_program_id?: string | null
           owner_recipient_id?: string | null
           owner_user_id?: string | null
+          phantom_address?: string | null
+          phantom_linked_at?: string | null
           updated_at?: string
           wallet_address?: string
           wallet_type: Database["public"]["Enums"]["bansos_wallet_type"]
@@ -488,6 +492,8 @@ export type Database = {
           owner_program_id?: string | null
           owner_recipient_id?: string | null
           owner_user_id?: string | null
+          phantom_address?: string | null
+          phantom_linked_at?: string | null
           updated_at?: string
           wallet_address?: string
           wallet_type?: Database["public"]["Enums"]["bansos_wallet_type"]
@@ -808,6 +814,30 @@ export type Database = {
         Returns: boolean
       }
       bansos_is_staff: { Args: { _user_id: string }; Returns: boolean }
+      bansos_link_phantom: {
+        Args: { _phantom_address: string }
+        Returns: {
+          balance: number
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string
+          owner_program_id: string | null
+          owner_recipient_id: string | null
+          owner_user_id: string | null
+          phantom_address: string | null
+          phantom_linked_at: string | null
+          updated_at: string
+          wallet_address: string
+          wallet_type: Database["public"]["Enums"]["bansos_wallet_type"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "bansos_wallets"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       bansos_merchant_purchase: {
         Args: { _amount: number; _description?: string; _merchant_id: string }
         Returns: string
@@ -842,6 +872,30 @@ export type Database = {
       bansos_treasury_topup: {
         Args: { _amount: number; _description?: string; _program_id: string }
         Returns: string
+      }
+      bansos_unlink_phantom: {
+        Args: never
+        Returns: {
+          balance: number
+          created_at: string
+          id: string
+          is_active: boolean
+          label: string
+          owner_program_id: string | null
+          owner_recipient_id: string | null
+          owner_user_id: string | null
+          phantom_address: string | null
+          phantom_linked_at: string | null
+          updated_at: string
+          wallet_address: string
+          wallet_type: Database["public"]["Enums"]["bansos_wallet_type"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "bansos_wallets"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       bansos_verify_chain: {
         Args: never
