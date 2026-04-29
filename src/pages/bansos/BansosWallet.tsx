@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Wallet, ArrowDownLeft, ArrowUpRight, Copy, ShoppingBag, Link2, Unlink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,50 @@ export default function BansosWallet() {
     navigator.clipboard.writeText(wallet.wallet_address);
     toast({ title: "Tersalin", description: "Alamat dompet disalin." });
   };
+
+  // Realtime sync: dompet baru / saldo berubah / transaksi baru
+  useEffect(() => {
+    let userId: string | null = null;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      userId = user.id;
+
+      channel = supabase
+        .channel(`wallet-sync-${userId}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "bansos_wallets", filter: `owner_user_id=eq.${userId}` },
+          () => {
+            queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
+            queryClient.invalidateQueries({ queryKey: ["bansos-wallet-txs"] });
+          }
+        )
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "bansos_wallet_transactions" },
+          (payload: any) => {
+            const wId = wallet?.id;
+            if (!wId) {
+              queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
+              return;
+            }
+            if (payload.new?.from_wallet_id === wId || payload.new?.to_wallet_id === wId) {
+              queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
+              queryClient.invalidateQueries({ queryKey: ["bansos-wallet-txs", wId] });
+            }
+          }
+        )
+        .subscribe();
+    })();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [wallet?.id, queryClient]);
+
 
   const handleConnectPhantom = async () => {
     const provider = (window as any)?.phantom?.solana ?? (window as any)?.solana;
