@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield } from "lucide-react";
+import bansosLogo from "@/assets/bansoschain-icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,7 +57,7 @@ export default function BansosLogin() {
       </div>
       <div className="w-full max-w-md">
         <Link to="/bansos" className="flex items-center gap-2 justify-center mb-8">
-          <Shield className="h-7 w-7 text-bansos-accent" />
+          <img src={bansosLogo} alt="BansosChain logo" width={32} height={32} className="h-8 w-8" />
           <span className="font-bold text-xl text-bansos-text tracking-tight">BansosChain</span>
         </Link>
 

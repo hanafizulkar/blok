@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Shield, LayoutDashboard, Users, Package, BarChart3, LogOut, Menu, Blocks, Wallet, Landmark, Store } from "lucide-react";
+import { LayoutDashboard, Users, Package, BarChart3, LogOut, Menu, Blocks, Wallet, Landmark, Store } from "lucide-react";
+import bansosLogo from "@/assets/bansoschain-icon.png";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -56,7 +57,7 @@ export default function BansosLayout() {
     <div className="flex min-h-screen bg-bansos-bg">
       <aside className="hidden md:flex flex-col w-56 border-r border-bansos-border bg-bansos-surface">
         <Link to="/bansos" className="flex items-center gap-2 h-14 px-4 border-b border-bansos-border">
-          <Shield className="h-5 w-5 text-bansos-accent" />
+          <img src={bansosLogo} alt="BansosChain logo" width={24} height={24} className="h-6 w-6" />
           <span className="font-bold text-bansos-text tracking-tight">BansosChain</span>
         </Link>
         <nav className="flex-1 py-3 px-2 space-y-0.5">
@@ -81,7 +82,7 @@ export default function BansosLayout() {
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-56 bg-bansos-surface border-bansos-border">
               <div className="flex items-center gap-2 h-14 px-4 border-b border-bansos-border">
-                <Shield className="h-5 w-5 text-bansos-accent" />
+                <img src={bansosLogo} alt="BansosChain logo" width={24} height={24} className="h-6 w-6" />
                 <span className="font-bold text-bansos-text">BansosChain</span>
               </div>
               <nav className="py-3 px-2 space-y-0.5">
@@ -90,7 +91,7 @@ export default function BansosLayout() {
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-1.5">
-            <Shield className="h-4 w-4 text-bansos-accent" />
+            <img src={bansosLogo} alt="BansosChain logo" width={20} height={20} className="h-5 w-5" />
             <span className="font-bold text-bansos-text text-sm">BansosChain</span>
           </div>
           <BansosThemeToggle />
