@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, Search, Eye, BarChart3, ChevronRight, ArrowRight } from "lucide-react";
+import { Shield, Search, Eye, BarChart3, ChevronRight, ArrowRight, Wallet, ArrowUpRight, ArrowDownLeft, QrCode, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -84,6 +84,84 @@ export default function BansosLanding() {
               </CardContent>
             </Card>
           ))}
+        </div>
+      </section>
+
+      {/* E-Wallet Showcase */}
+      <section className="max-w-6xl mx-auto px-4 pb-20">
+        <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-bansos-primary/10 border border-bansos-primary/30 rounded-full px-3 py-1 text-xs text-bansos-primary mb-4">
+              <Wallet className="h-3 w-3" /> Dompet Digital Bansos
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
+              Dompet bansos di <span className="text-bansos-accent">genggaman</span> Anda
+            </h2>
+            <p className="text-bansos-text-muted mb-6">
+              Terima penyaluran bantuan langsung ke dompet digital. Belanja di merchant terverifikasi, top-up treasury, dan pantau setiap transaksi secara transparan di blockchain.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Link to="/bansos/wallet">
+                <Button className="bg-bansos-accent text-bansos-on-accent hover:bg-bansos-accent-hover font-semibold">
+                  Buka Dompet Saya <ArrowRight className="h-4 w-4 ml-1" />
+                </Button>
+              </Link>
+              <Link to="/bansos/merchants">
+                <Button variant="outline" className="border-bansos-border text-bansos-text hover:bg-bansos-surface">
+                  Lihat Merchant
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Mock Wallet Card */}
+          <div className="relative">
+            <Card className="bg-gradient-to-br from-bansos-primary to-bansos-accent border-0 shadow-2xl overflow-hidden">
+              <CardContent className="p-6 text-white">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <img src={bansosLogo} alt="" width={28} height={28} className="h-7 w-7 brightness-0 invert" />
+                    <span className="font-semibold text-sm">BansosChain Wallet</span>
+                  </div>
+                  <Wallet className="h-5 w-5 opacity-80" />
+                </div>
+                <div className="mb-6">
+                  <div className="text-xs opacity-80 mb-1">Saldo Tersedia</div>
+                  <div className="text-3xl font-bold tracking-tight">Rp 750.000</div>
+                  <div className="text-xs opacity-70 mt-1">PKH · Kartu Sembako</div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { icon: Plus, label: "Top-up" },
+                    { icon: ArrowUpRight, label: "Kirim" },
+                    { icon: QrCode, label: "Scan" },
+                  ].map((a) => (
+                    <div key={a.label} className="flex flex-col items-center gap-1.5 bg-white/15 backdrop-blur rounded-lg py-3">
+                      <a.icon className="h-4 w-4" />
+                      <span className="text-[11px] font-medium">{a.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-5 pt-4 border-t border-white/20 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <ArrowDownLeft className="h-3.5 w-3.5" />
+                      <span>Penyaluran PKH</span>
+                    </div>
+                    <span className="font-semibold">+Rp 500.000</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs opacity-90">
+                    <div className="flex items-center gap-2">
+                      <ArrowUpRight className="h-3.5 w-3.5" />
+                      <span>Toko Berkah Sembako</span>
+                    </div>
+                    <span>-Rp 125.000</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <div className="absolute -inset-4 bg-bansos-accent/20 blur-3xl -z-10 rounded-full" />
+          </div>
         </div>
       </section>
 
