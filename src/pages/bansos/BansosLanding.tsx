@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { BansosThemeToggle } from "@/components/bansos/BansosThemeToggle";
+import bansosLogo from "@/assets/bansoschain-icon.png";
 
 export default function BansosLanding() {
   const [query, setQuery] = useState("");
@@ -20,7 +21,7 @@ export default function BansosLanding() {
       <header className="border-b border-bansos-border">
         <div className="max-w-6xl mx-auto flex items-center justify-between h-14 px-4">
           <Link to="/bansos" className="flex items-center gap-2">
-            <Shield className="h-6 w-6 text-bansos-accent" />
+            <img src={bansosLogo} alt="BansosChain logo" width={28} height={28} className="h-7 w-7" />
             <span className="font-bold text-lg tracking-tight">BansosChain</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm text-bansos-text-muted">
