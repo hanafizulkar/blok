@@ -87,15 +87,40 @@ export default function BansosWallet() {
       return;
     }
     try {
-      const resp = await provider.connect();
-      const address = resp?.publicKey?.toString();
-      if (!address) throw new Error("Gagal mendapatkan alamat Phantom");
+      // Pastikan sesi lama benar-benar diputus agar Phantom memunculkan popup approval lagi
+      try { await provider.disconnect?.(); } catch {}
+      let address: string | undefined;
+      try {
+        const resp = await provider.connect();
+        address = resp?.publicKey?.toString();
+      } catch (e: any) {
+        // User menolak / popup ditutup
+        const msg = e?.message?.toLowerCase?.() ?? "";
+        if (e?.code === 4001 || msg.includes("reject") || msg.includes("user")) {
+          throw new Error("Permintaan koneksi dibatalkan di Phantom.");
+        }
+        throw e;
+      }
+      if (!address) {
+        // Fallback ambil dari publicKey provider
+        address = provider.publicKey?.toString();
+      }
+      if (!address) throw new Error("Phantom tidak mengembalikan alamat. Buka ekstensi Phantom dan setujui koneksi.");
+
       const { error } = await supabase.rpc("bansos_link_phantom", { _phantom_address: address });
-      if (error) throw error;
+      if (error) {
+        console.error("[phantom] link RPC error:", error);
+        throw new Error(error.message || "Gagal menyimpan alamat ke server.");
+      }
       toast({ title: "Phantom terhubung", description: address.slice(0, 8) + "…" + address.slice(-6) });
       queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
     } catch (err: any) {
-      toast({ title: "Gagal menghubungkan", description: err?.message ?? "Coba lagi", variant: "destructive" });
+      console.error("[phantom] connect error:", err);
+      toast({
+        title: "Gagal menghubungkan",
+        description: err?.message ?? "Coba lagi",
+        variant: "destructive",
+      });
     }
   };
 
