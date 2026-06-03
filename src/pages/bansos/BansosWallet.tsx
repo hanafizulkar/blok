@@ -74,6 +74,25 @@ export default function BansosWallet() {
     };
   }, [wallet?.id, queryClient]);
 
+  // Cegah Phantom auto-connect: putuskan sesi "trusted" saat halaman dimuat
+  // sehingga user harus selalu menekan tombol "Hubungkan" secara eksplisit.
+  useEffect(() => {
+    const provider = (window as any)?.phantom?.solana ?? (window as any)?.solana;
+    if (!provider?.isPhantom) return;
+    // Putuskan sesi yang mungkin di-auto-connect oleh Phantom
+    try { provider.disconnect?.(); } catch {}
+    // Jaga-jaga jika Phantom memicu event connect otomatis
+    const onConnect = () => {
+      try { provider.disconnect?.(); } catch {}
+    };
+    provider.on?.("connect", onConnect);
+    return () => {
+      provider.off?.("connect", onConnect);
+    };
+  }, []);
+
+
+
 
   const handleConnectPhantom = async () => {
     const provider = (window as any)?.phantom?.solana ?? (window as any)?.solana;
