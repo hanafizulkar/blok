@@ -252,15 +252,15 @@ export default function BansosWallet() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold text-bansos-text">Phantom Wallet</div>
-            {(wallet as any).phantom_address ? (
+            {phantomSession ? (
               <code className="text-xs text-bansos-text-faint font-mono truncate block">
-                {(wallet as any).phantom_address.slice(0, 8)}…{(wallet as any).phantom_address.slice(-6)}
+                {phantomSession.slice(0, 8)}…{phantomSession.slice(-6)}
               </code>
             ) : (
               <div className="text-xs text-bansos-text-muted">Hubungkan untuk membuka Phantom dan aktifkan Solana</div>
             )}
           </div>
-          {(wallet as any).phantom_address ? (
+          {phantomSession ? (
             <div className="flex items-center gap-2">
               <Dialog>
                 <DialogTrigger asChild>
