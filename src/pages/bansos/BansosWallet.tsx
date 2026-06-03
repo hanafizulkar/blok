@@ -91,7 +91,15 @@ export default function BansosWallet() {
     if (!provider?.isPhantom) return;
     (async () => {
       try { await provider.disconnect?.(); } catch {}
+      setPhantomSession(null);
     })();
+    const onDisconnect = () => setPhantomSession(null);
+    provider.on?.("disconnect", onDisconnect);
+    provider.on?.("accountChanged", onDisconnect);
+    return () => {
+      provider.off?.("disconnect", onDisconnect);
+      provider.off?.("accountChanged", onDisconnect);
+    };
   }, []);
 
   const handleConnectPhantom = async () => {
