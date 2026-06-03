@@ -150,6 +150,7 @@ export default function BansosWallet() {
         throw new Error(error.message || "Gagal menyimpan alamat ke server.");
       }
       toast({ title: "Phantom terhubung", description: address.slice(0, 8) + "…" + address.slice(-6) });
+      setPhantomSession(address);
       queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
     } catch (err: any) {
       console.error("[phantom] connect error:", err);
