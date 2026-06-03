@@ -74,25 +74,15 @@ export default function BansosWallet() {
     };
   }, [wallet?.id, queryClient]);
 
-  // Cegah Phantom auto-connect: putuskan sesi "trusted" saat halaman dimuat
-  // sehingga user harus selalu menekan tombol "Hubungkan" secara eksplisit.
+  // Cegah Phantom auto-connect: putuskan sesi "trusted" sekali saat halaman dimuat
+  // sehingga user harus menekan tombol "Hubungkan" untuk approval baru.
   useEffect(() => {
     const provider = (window as any)?.phantom?.solana ?? (window as any)?.solana;
     if (!provider?.isPhantom) return;
-    // Putuskan sesi yang mungkin di-auto-connect oleh Phantom
-    try { provider.disconnect?.(); } catch {}
-    // Jaga-jaga jika Phantom memicu event connect otomatis
-    const onConnect = () => {
-      try { provider.disconnect?.(); } catch {}
-    };
-    provider.on?.("connect", onConnect);
-    return () => {
-      provider.off?.("connect", onConnect);
-    };
+    (async () => {
+      try { await provider.disconnect?.(); } catch {}
+    })();
   }, []);
-
-
-
 
   const handleConnectPhantom = async () => {
     const provider = (window as any)?.phantom?.solana ?? (window as any)?.solana;
@@ -106,20 +96,27 @@ export default function BansosWallet() {
       return;
     }
     try {
-      // Pastikan sesi lama benar-benar diputus agar Phantom memunculkan popup approval lagi
-      try { await provider.disconnect?.(); } catch {}
       let address: string | undefined;
       try {
         const resp = await provider.connect();
         address = resp?.publicKey?.toString();
       } catch (e: any) {
-        // User menolak / popup ditutup
         const msg = e?.message?.toLowerCase?.() ?? "";
         if (e?.code === 4001 || msg.includes("reject") || msg.includes("user")) {
           throw new Error("Permintaan koneksi dibatalkan di Phantom.");
         }
-        throw e;
+        // Phantom kadang melempar -32603 "Unexpected error" bila ada request
+        // approval yang masih tertunda. Coba sekali lagi setelah disconnect bersih.
+        if (e?.code === -32603) {
+          try { await provider.disconnect?.(); } catch {}
+          await new Promise((r) => setTimeout(r, 300));
+          const resp2 = await provider.connect();
+          address = resp2?.publicKey?.toString();
+        } else {
+          throw e;
+        }
       }
+
       if (!address) {
         // Fallback ambil dari publicKey provider
         address = provider.publicKey?.toString();
