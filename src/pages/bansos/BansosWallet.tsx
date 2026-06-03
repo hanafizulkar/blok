@@ -33,6 +33,7 @@ export default function BansosWallet() {
   const [open, setOpen] = useState(false);
   const [merchantId, setMerchantId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [phantomSession, setPhantomSession] = useState<string | null>(null);
 
   const copyAddr = () => {
     if (!wallet?.wallet_address) return;
