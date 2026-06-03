@@ -33,6 +33,7 @@ export default function BansosWallet() {
   const [open, setOpen] = useState(false);
   const [merchantId, setMerchantId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [phantomSession, setPhantomSession] = useState<string | null>(null);
 
   const copyAddr = () => {
     if (!wallet?.wallet_address) return;
@@ -90,7 +91,15 @@ export default function BansosWallet() {
     if (!provider?.isPhantom) return;
     (async () => {
       try { await provider.disconnect?.(); } catch {}
+      setPhantomSession(null);
     })();
+    const onDisconnect = () => setPhantomSession(null);
+    provider.on?.("disconnect", onDisconnect);
+    provider.on?.("accountChanged", onDisconnect);
+    return () => {
+      provider.off?.("disconnect", onDisconnect);
+      provider.off?.("accountChanged", onDisconnect);
+    };
   }, []);
 
   const handleConnectPhantom = async () => {
@@ -141,6 +150,7 @@ export default function BansosWallet() {
         throw new Error(error.message || "Gagal menyimpan alamat ke server.");
       }
       toast({ title: "Phantom terhubung", description: address.slice(0, 8) + "…" + address.slice(-6) });
+      setPhantomSession(address);
       queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
     } catch (err: any) {
       console.error("[phantom] connect error:", err);
@@ -156,6 +166,7 @@ export default function BansosWallet() {
     const { error } = await supabase.rpc("bansos_unlink_phantom");
     if (error) return toast({ title: "Gagal", description: error.message, variant: "destructive" });
     try { await (window as any)?.phantom?.solana?.disconnect?.(); } catch {}
+    setPhantomSession(null);
     toast({ title: "Phantom diputus" });
     queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
   };
@@ -241,15 +252,15 @@ export default function BansosWallet() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold text-bansos-text">Phantom Wallet</div>
-            {(wallet as any).phantom_address ? (
+            {phantomSession ? (
               <code className="text-xs text-bansos-text-faint font-mono truncate block">
-                {(wallet as any).phantom_address.slice(0, 8)}…{(wallet as any).phantom_address.slice(-6)}
+                {phantomSession.slice(0, 8)}…{phantomSession.slice(-6)}
               </code>
             ) : (
               <div className="text-xs text-bansos-text-muted">Hubungkan untuk membuka Phantom dan aktifkan Solana</div>
             )}
           </div>
-          {(wallet as any).phantom_address ? (
+          {phantomSession ? (
             <div className="flex items-center gap-2">
               <Dialog>
                 <DialogTrigger asChild>
@@ -264,7 +275,7 @@ export default function BansosWallet() {
                   <div className="flex flex-col items-center gap-4 py-2">
                     <div className="bg-white p-4 rounded-md">
                       <QRCodeSVG
-                        value={(wallet as any).phantom_address}
+                        value={phantomSession ?? ""}
                         size={220}
                         level="H"
                         includeMargin={false}
@@ -273,14 +284,15 @@ export default function BansosWallet() {
                     <div className="text-xs font-semibold text-bansos-accent">Your Solana Address</div>
                     <div className="w-full bg-bansos-bg border border-bansos-border rounded-md p-3">
                       <code className="text-xs text-bansos-text font-mono break-all text-center block">
-                        {(wallet as any).phantom_address}
+                        {phantomSession}
                       </code>
                     </div>
                     <Button
                       variant="outline"
                       className="w-full"
                       onClick={() => {
-                        navigator.clipboard.writeText((wallet as any).phantom_address);
+                        if (!phantomSession) return;
+                        navigator.clipboard.writeText(phantomSession);
                         toast({ title: "Tersalin", description: "Alamat Phantom disalin." });
                       }}
                     >
