@@ -175,6 +175,7 @@ export function useBansosTrack(query: string | null) {
   return useQuery({
     queryKey: ["bansos-track", query],
     enabled: !!query,
+    retry: false,
     queryFn: async () => {
       const { data, error } = await supabase.rpc("bansos_public_track", { _query: query! });
       if (error) throw error;
