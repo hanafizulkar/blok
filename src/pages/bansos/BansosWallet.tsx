@@ -166,6 +166,7 @@ export default function BansosWallet() {
     const { error } = await supabase.rpc("bansos_unlink_phantom");
     if (error) return toast({ title: "Gagal", description: error.message, variant: "destructive" });
     try { await (window as any)?.phantom?.solana?.disconnect?.(); } catch {}
+    setPhantomSession(null);
     toast({ title: "Phantom diputus" });
     queryClient.invalidateQueries({ queryKey: ["bansos-my-wallet"] });
   };
