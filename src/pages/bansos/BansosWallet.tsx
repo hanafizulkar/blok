@@ -14,6 +14,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 const formatIDR = (n: number) => `Rp ${Number(n).toLocaleString("id-ID")}`;
+const SOLANA_SETUP_MESSAGE = "Buka Phantom lalu aktifkan Solana (SOL) dari layar Welcome. Setelah Solana aktif, klik Hubungkan lagi.";
+
+const openPhantomSolana = () => {
+  const appUrl = encodeURIComponent(window.location.href);
+  const ref = encodeURIComponent(window.location.origin);
+  window.open(`https://phantom.app/ul/browse/${appUrl}?ref=${ref}`, "_blank", "noopener,noreferrer");
+};
+
+const getPhantomAddress = (provider: any) => provider?.publicKey?.toString?.();
 
 export default function BansosWallet() {
   const { data: wallet, isLoading } = useBansosMyWallet();
@@ -98,20 +107,20 @@ export default function BansosWallet() {
     try {
       let address: string | undefined;
       try {
-        const resp = await provider.connect();
-        address = resp?.publicKey?.toString();
+        const resp = await provider.connect({ onlyIfTrusted: false });
+        address = resp?.publicKey?.toString() ?? getPhantomAddress(provider);
       } catch (e: any) {
         const msg = e?.message?.toLowerCase?.() ?? "";
         if (e?.code === 4001 || msg.includes("reject") || msg.includes("user")) {
-          throw new Error("Permintaan koneksi dibatalkan di Phantom.");
+          throw new Error(`Permintaan koneksi dibatalkan di Phantom. ${SOLANA_SETUP_MESSAGE}`);
         }
         // Phantom kadang melempar -32603 "Unexpected error" bila ada request
         // approval yang masih tertunda. Coba sekali lagi setelah disconnect bersih.
         if (e?.code === -32603) {
           try { await provider.disconnect?.(); } catch {}
           await new Promise((r) => setTimeout(r, 300));
-          const resp2 = await provider.connect();
-          address = resp2?.publicKey?.toString();
+          const resp2 = await provider.connect({ onlyIfTrusted: false });
+          address = resp2?.publicKey?.toString() ?? getPhantomAddress(provider);
         } else {
           throw e;
         }
@@ -119,9 +128,12 @@ export default function BansosWallet() {
 
       if (!address) {
         // Fallback ambil dari publicKey provider
-        address = provider.publicKey?.toString();
+        address = getPhantomAddress(provider);
       }
-      if (!address) throw new Error("Phantom tidak mengembalikan alamat. Buka ekstensi Phantom dan setujui koneksi.");
+      if (!address) {
+        openPhantomSolana();
+        throw new Error(`Phantom belum mengembalikan alamat Solana. ${SOLANA_SETUP_MESSAGE}`);
+      }
 
       const { error } = await supabase.rpc("bansos_link_phantom", { _phantom_address: address });
       if (error) {
@@ -234,7 +246,7 @@ export default function BansosWallet() {
                 {(wallet as any).phantom_address.slice(0, 8)}…{(wallet as any).phantom_address.slice(-6)}
               </code>
             ) : (
-              <div className="text-xs text-bansos-text-muted">Hubungkan untuk verifikasi identitas Web3</div>
+              <div className="text-xs text-bansos-text-muted">Hubungkan untuk membuka Phantom dan aktifkan Solana</div>
             )}
           </div>
           {(wallet as any).phantom_address ? (
