@@ -275,7 +275,7 @@ export default function BansosWallet() {
                   <div className="flex flex-col items-center gap-4 py-2">
                     <div className="bg-white p-4 rounded-md">
                       <QRCodeSVG
-                        value={(wallet as any).phantom_address}
+                        value={phantomSession ?? ""}
                         size={220}
                         level="H"
                         includeMargin={false}
@@ -284,14 +284,15 @@ export default function BansosWallet() {
                     <div className="text-xs font-semibold text-bansos-accent">Your Solana Address</div>
                     <div className="w-full bg-bansos-bg border border-bansos-border rounded-md p-3">
                       <code className="text-xs text-bansos-text font-mono break-all text-center block">
-                        {(wallet as any).phantom_address}
+                        {phantomSession}
                       </code>
                     </div>
                     <Button
                       variant="outline"
                       className="w-full"
                       onClick={() => {
-                        navigator.clipboard.writeText((wallet as any).phantom_address);
+                        if (!phantomSession) return;
+                        navigator.clipboard.writeText(phantomSession);
                         toast({ title: "Tersalin", description: "Alamat Phantom disalin." });
                       }}
                     >
