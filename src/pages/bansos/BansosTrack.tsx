@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { Search, Shield, ArrowRight, Blocks, Calendar, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +46,7 @@ const formatDate = (iso?: string | null) => {
 
 export default function BansosTrack() {
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
   const q = params.get("q") ?? "";
   const [input, setInput] = useState(q);
   const { data: results, isLoading, error } = useBansosTrack(q || null);
@@ -53,10 +54,14 @@ export default function BansosTrack() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const v = normalize(input);
-    if (v) {
-      setInput(v);
-      setParams({ q: v });
+    if (!v) return;
+    setInput(v);
+    // BNS- tracking ID → langsung ke halaman detail (shareable)
+    if (/^BNS-/i.test(v)) {
+      navigate(`/bansos/track/${encodeURIComponent(v)}`);
+      return;
     }
+    setParams({ q: v });
   };
 
   return (

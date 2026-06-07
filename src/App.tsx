@@ -23,6 +23,7 @@ import BansosRecipients from "./pages/bansos/BansosRecipients";
 import BansosDistributions from "./pages/bansos/BansosDistributions";
 import BansosBlockchain from "./pages/bansos/BansosBlockchain";
 import BansosTrack from "./pages/bansos/BansosTrack";
+import BansosTrackDetail from "./pages/bansos/BansosTrackDetail";
 import BansosStats from "./pages/bansos/BansosStats";
 import { BansosProtectedRoute } from "./components/bansos/BansosProtectedRoute";
 import BansosWallet from "./pages/bansos/BansosWallet";
@@ -53,6 +54,7 @@ const App = () => (
               <Route path="/bansos" element={<BansosLanding />} />
               <Route path="/bansos/login" element={<BansosLogin />} />
               <Route path="/bansos/track" element={<BansosTrack />} />
+              <Route path="/bansos/track/:trackingId" element={<BansosTrackDetail />} />
               <Route path="/bansos/stats" element={<BansosStats />} />
 
               {/* Bansos module — authenticated */}
